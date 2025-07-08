@@ -1,35 +1,66 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// import { useState } from 'react'
+// import reactLogo from './assets/react.svg'
+// import viteLogo from '/vite.svg'
+// import React from 'react';
+import { WalletProvider, metaMaskWallet, ConnectButton } from './wallet';
+import './App.css';
+
+const chains = [
+  {
+    id: 137,
+    name: 'Polygon',
+    rpcUrl: 'https://polygon-rpc.com',
+    currency: {
+      name: 'Matic',
+      symbol: 'MATIC',
+      decimals: 18,
+    },
+    blockExplorer: {
+      name: 'PolygonScan',
+      url: 'https://polygonscan.com',
+    },
+  },
+  {
+    id: 11155111,
+    name: 'Sepolia',
+    rpcUrl: 'https://sepolia.infura.io/v3/d8ed0bd1de8242d998a1405b6932ab33',
+    currency: {
+      name: 'Sepolia Ether',
+      symbol: 'ETH',
+      decimals: 18,
+    },
+    blockExplorer: {
+      name: 'Etherscan',
+      url: 'https://sepolia.etherscan.io',
+    },
+  },
+  {
+    id: 56,
+    name: 'BNB Smart Chain',
+    rpcUrl: 'https://bsc-dataseed.binance.org',
+    currency: {
+      name: 'BNB',
+      symbol: 'BNB',
+      decimals: 18,
+    },
+    blockExplorer: {
+      name: 'BscScan',
+      url: 'https://bscscan.com',
+    },
+  },
+];
+
+// Define supported wallets
+const wallets = [metaMaskWallet];
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <WalletProvider chains={chains} wallets={wallets}>
+        <ConnectButton />
+      </WalletProvider>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
