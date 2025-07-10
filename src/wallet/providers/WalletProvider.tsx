@@ -20,25 +20,7 @@ import { getStorageItem, setStorageItem } from '../utils';
 import { ethers } from 'ethers';
 import { getCurrencies, getWalletBalance, getLiveRates } from '../../services';
 
-const WalletContext = createContext<WalletContextValue>({
-  address: null,
-  chainId: null,
-  isConnecting: false,
-  isConnected: false,
-  error: null,
-  provider: null,
-  connect: async () => {},
-  disconnect: async () => {},
-  switchChain: async () => {},
-  openModal: () => {},
-  closeModal: () => {},
-  isModalOpen: false,
-  chains: [],
-  currencies: [],
-  walletBalance: [],
-  liveRates: [],
-  dataStatus: 'idle',
-});
+const WalletContext = createContext<WalletContextValue | undefined>(undefined);
 
 export const WalletProvider: React.FC<WalletProviderProps> = ({
   children,
