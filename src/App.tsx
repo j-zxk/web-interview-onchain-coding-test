@@ -1,25 +1,12 @@
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
-// import React from 'react';
-import { WalletProvider, metaMaskWallet, ConnectButton } from './wallet';
+import {
+  WalletProvider,
+  metaMaskWallet,
+  ConnectButton,
+  CurrenciesList,
+} from './wallet';
 import './App.css';
 
 const chains = [
-  {
-    id: 137,
-    name: 'Polygon',
-    rpcUrl: 'https://polygon-rpc.com',
-    currency: {
-      name: 'Matic',
-      symbol: 'MATIC',
-      decimals: 18,
-    },
-    blockExplorer: {
-      name: 'PolygonScan',
-      url: 'https://polygonscan.com',
-    },
-  },
   {
     id: 11155111,
     name: 'Sepolia',
@@ -35,17 +22,17 @@ const chains = [
     },
   },
   {
-    id: 56,
-    name: 'BNB Smart Chain',
-    rpcUrl: 'https://bsc-dataseed.binance.org',
+    id: 25,
+    name: 'Cronos',
+    rpcUrl: 'https://evm.cronos.org',
     currency: {
-      name: 'BNB',
-      symbol: 'BNB',
+      name: 'Cronos',
+      symbol: 'CRO',
       decimals: 18,
     },
     blockExplorer: {
-      name: 'BscScan',
-      url: 'https://bscscan.com',
+      name: 'Cronos Explorer',
+      url: 'https://cronoscan.com',
     },
   },
 ];
@@ -58,6 +45,7 @@ function App() {
     <>
       <WalletProvider chains={chains} wallets={wallets}>
         <ConnectButton />
+        <CurrenciesList />
       </WalletProvider>
     </>
   );

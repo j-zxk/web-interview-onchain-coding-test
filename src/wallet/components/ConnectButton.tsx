@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useWallet } from '../providers/WalletProvider';
 import type { ConnectButtonProps } from '../types';
 import { formatEther, getNetworkName } from '../utils';
@@ -30,12 +30,19 @@ const ConnectButton: React.FC<ConnectButtonProps> = ({
   const [balance, setBalance] = useState<string | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  const currentChain = useMemo(() => {
+    return chains.find((chain) => chain.id === chainId) || null;
+  }, [chains, chainId]);
+
   // 余额获取
   const fetchBalance = useCallback(async () => {
     if (isConnected && address && provider) {
       try {
         const balanceBigInt = await provider.getBalance(address);
-        const formattedBalance = formatEther(balanceBigInt);
+        const formattedBalance = formatEther(
+          balanceBigInt,
+          currentChain?.currency.symbol
+        );
         setBalance(formattedBalance);
 
         // 触发余额变化回调
@@ -46,7 +53,7 @@ const ConnectButton: React.FC<ConnectButtonProps> = ({
     } else {
       setBalance(null);
     }
-  }, [isConnected, address, provider, onBalanceChange]);
+  }, [isConnected, address, provider, currentChain, onBalanceChange]);
 
   useEffect(() => {
     fetchBalance();

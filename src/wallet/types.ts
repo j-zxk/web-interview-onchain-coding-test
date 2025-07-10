@@ -32,6 +32,38 @@ export interface WalletState {
   provider: any;
 }
 
+export interface Currency {
+  coin_id: string;
+  name: string;
+  symbol: string;
+}
+
+export interface Asset {
+  currency: string;
+  amount: number;
+}
+
+export interface Rate {
+  amount: string;
+  rate: string;
+}
+
+export interface ExchangeRate {
+  from_currency: string;
+  to_currency: string;
+  rates: Rate[];
+  time_stamp: number;
+}
+
+export interface CurrencyMerged extends Currency {
+  currency?: string;
+  amount?: number;
+  from_currency?: string;
+  to_currency?: string;
+  rates?: Rate[];
+  time_stamp?: number;
+}
+
 export interface WalletContextValue extends WalletState {
   connect: (walletId: string) => Promise<void>;
   disconnect: () => Promise<void>;
@@ -40,6 +72,10 @@ export interface WalletContextValue extends WalletState {
   closeModal: () => void;
   isModalOpen: boolean;
   chains: Chain[];
+  currencies: Currency[];
+  walletBalance: Asset[];
+  liveRates: ExchangeRate[];
+  dataStatus: 'idle' | 'loading' | 'empty' | 'success';
 }
 
 export interface WalletProviderProps {

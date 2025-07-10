@@ -1,13 +1,29 @@
 import { ethers } from 'ethers';
 
-export const formatEther = (value: string | number, decimals = 4): string => {
-  if (!value) return '0 ETH';
+export const formatEther = (
+  value: string | number,
+  symbol = 'ETH',
+  decimals = 4
+): string => {
+  if (!value) return `0 ${symbol}`;
 
   const formatted = parseFloat(ethers.formatEther(value.toString()))
     .toFixed(decimals)
     .replace(/\.?0+$/, ''); // Remove trailing zeros
 
-  return `${formatted} ETH`;
+  return `${formatted} ${symbol}`;
+};
+
+export const formatToCurrency = (
+  value: number,
+  to_currency: string,
+  rate: string
+): string => {
+  if (!value) return `0 ${to_currency}`;
+
+  const formatted = (value * parseFloat(rate)).toFixed(2).replace(/\.?0+$/, '');
+
+  return `${formatted} ${to_currency}`;
 };
 
 export const getNetworkName = (chainId: number): string => {

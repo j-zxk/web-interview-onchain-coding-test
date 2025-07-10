@@ -11,10 +11,14 @@ import type {
   WalletContextValue,
   WalletProviderProps,
   WalletState,
+  Currency,
+  Asset,
+  ExchangeRate,
 } from '../types';
 import WalletModal from '../components/WalletModal';
 import { getStorageItem, setStorageItem } from '../utils';
 import { ethers } from 'ethers';
+import { getCurrencies, getWalletBalance, getLiveRates } from '../../services';
 
 const WalletContext = createContext<WalletContextValue>({
   address: null,
@@ -30,6 +34,10 @@ const WalletContext = createContext<WalletContextValue>({
   closeModal: () => {},
   isModalOpen: false,
   chains: [],
+  currencies: [],
+  walletBalance: [],
+  liveRates: [],
+  dataStatus: 'idle',
 });
 
 export const WalletProvider: React.FC<WalletProviderProps> = ({
@@ -47,6 +55,12 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({
     provider: null,
   });
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [currencies, setCurrencies] = useState<Currency[]>([]);
+  const [walletBalance, setWalletBalance] = useState<Asset[]>([]);
+  const [liveRates, setLiveRates] = useState<ExchangeRate[]>([]);
+  const [dataStatus, setDataStatus] = useState<
+    'idle' | 'loading' | 'empty' | 'success'
+  >('idle');
 
   const walletsMap = useMemo(() => {
     return wallets.reduce((acc, wallet) => {
@@ -218,6 +232,24 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({
     }
   }, [autoConnect, walletsMap, connect]);
 
+  useEffect(() => {
+    if (state.provider !== null) {
+      setDataStatus('loading');
+      Promise.all([getCurrencies(), getWalletBalance(), getLiveRates()])
+        .then((res) => {
+          setDataStatus('success');
+          setCurrencies(res[0].currencies);
+          setWalletBalance(res[1].wallet);
+          setLiveRates(res[2].tiers);
+        })
+        .catch((error) => {
+          setDataStatus('empty');
+          console.error('failed to get currencies', error);
+          throw error;
+        });
+    }
+  }, [state]);
+
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
@@ -230,6 +262,10 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({
     closeModal,
     isModalOpen: false,
     chains,
+    currencies,
+    walletBalance,
+    liveRates,
+    dataStatus,
   };
 
   return (
